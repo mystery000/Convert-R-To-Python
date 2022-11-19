@@ -5,7 +5,7 @@ import statistics
 import numpy as np
 from scipy import stats
 import matplotlib.pyplot as plt
-
+from matplotlib.backends.backend_pdf import PdfPages
 
 def slideMean(data, window, step):
     total = len(data)
@@ -50,8 +50,8 @@ select_col = [
 window = 51
 step = 10
 
-os.chdir("C://Users/hiya/Documents/R To Python")
-savedir = "C:/Users/hiya/Documents/R To Python"
+os.chdir("D://Eau_Physio_248mV")
+savedir = "D://Eau_Physio_248mV"
 
 angle = [
   "0Deg"
@@ -87,9 +87,8 @@ tension =[
   ,"2480"        
 ]
 manip = [
-          "0.2Abs_2520mV_0mA_Ispec850"
-          ,"Eau_Physio_248mV"
-          ,"AIR_2490mV"
+          "Eau_Physio_248mV"
+          ,"AIR A 2490mV"
           ,"1Abs_268mV_0mA_Ispec850"
           ,"2Abs_288mV_0mA_Ispec850"
           ,"4Abs_3260mV_9mA_Ispec850"
@@ -99,8 +98,7 @@ manip = [
           ,"40Abs_3600mV_23mA_Ispec"        
 ]
 prefix = [
-          "/0.2Abs_2520mV_0mA_Ispec850_"
-          ,"/Eau_Physio_248mV_"
+          "/Eau_Physio_248mV_"
           ,"/AIR_"
           ,"/1Abs_268mV_0mA_Ispec850_"
           ,"/2Abs_288mV_0mA_Ispec850_"
@@ -145,9 +143,10 @@ def input(i_angle, i_manip):
     n = len(x)
     return [n,x,y]
 
-for i_manip in range(0, 1):   
-    plt.figure(figsize = (15,15))
-    
+pdf = PdfPages("".join([savedir,"/plots.pdf"]))
+
+for i_manip in range(0, 9):   
+    fig = plt.figure(figsize = (15,15))
     for i_angle in range(0, 20):
         data = input(i_angle, i_manip)
         n = data[0]
@@ -159,7 +158,8 @@ for i_manip in range(0, 1):
         plt.grid()
         plt.title(angle[i_angle])        
     plt.suptitle(manip[i_manip], color="Black", y=1.05, fontsize="xx-large")
-    plt.savefig("".join([savedir,"/plots.pdf"]), format="pdf", bbox_inches="tight")
+    fig.savefig(pdf, format="pdf", bbox_inches="tight")
     sys.stdout.flush() 
-
+    
+pdf.close()
 
