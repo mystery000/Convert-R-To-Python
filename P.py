@@ -50,8 +50,8 @@ select_col = [
 window = 51
 step = 10
 
-os.chdir("D://Eau_Physio_248mV")
-savedir = "D://Eau_Physio_248mV"
+os.chdir(f"{os.getcwd()}\Eau_Physio_248mV")
+savedir = f"{os.getcwd()}"
 
 angle = [
   "0Deg"
