@@ -59,6 +59,7 @@ select_col = [
 window = 51
 step = 10
 
+rootdir = f"{os.getcwd()}"
 os.chdir(f"{os.getcwd()}\Mesures dans l'air")
 savedir = f"{os.getcwd()}"
 
@@ -96,7 +97,7 @@ def input(d, f):
     n = len(x)
     return [n,x,y]
 
-pdf = PdfPages("".join([savedir,"/plots.pdf"]))
+pdf = PdfPages("".join([rootdir,"/plots.pdf"]))
 
 dirs = []
 for dir in os.listdir():
@@ -104,7 +105,7 @@ for dir in os.listdir():
         dirs.append(dir)
 
 for dir in dirs:   
-    fig = plt.figure(figsize = (20,20))
+    fig = plt.figure(figsize = (15,15))
     files = []
     for (root,folder,file) in os.walk(dir):
         files = file
