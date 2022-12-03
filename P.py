@@ -1,6 +1,7 @@
 import os
 import csv
 import sys
+import math
 import statistics
 import numpy as np
 from scipy import stats
@@ -58,12 +59,12 @@ select_col = [
 window = 51
 step = 10
 
-os.chdir(f"{os.getcwd()}\Eau_Physio_248mV")
+os.chdir(f"{os.getcwd()}\Mesures dans l'air")
 savedir = f"{os.getcwd()}"
 
 
 def convert(e):
-    x = e[0]
+    x = '.'.join(e)
     x = x.split("\t")
     x = map(toFloat, x)
     x = list(x)
@@ -78,7 +79,7 @@ def extractV1(e):
     return e[0]
 
 def extractV3(e):
-    return e[2]
+    return e[1]
 
 def input(d, f):
     file = "".join([savedir,"/",d, "/", f])
@@ -86,7 +87,7 @@ def input(d, f):
     with open(file, newline='') as f:
         reader = csv.reader(f)
         data1 = list(reader)
-    data1 = data1[24:]
+    data1 = data1[24:-1]
     data1 = list(map(convert, data1))
     datax = list(map(extractV1, data1))
     datay = list(map(extractV3, data1))
@@ -113,9 +114,14 @@ for dir in dirs:
         n = data[0]
         w1 = data[1]
         spectre = data[2]
-        plt.subplot(5,5,i+1).set_ylim(0,1)
+        
+        lg = len(files)
+        y = 5
+        x = math.ceil(lg/y)
+        
+        plt.subplot(x, y, i+1).set_ylim(0,3)
         plt.tight_layout(pad=0.5, w_pad=0.5, h_pad=1.0)
-        plt.plot(w1, spectre,'ro', color=select_col[i], markersize=1)
+        plt.plot(w1, spectre,'ro', color=select_col[i % len(select_col)], markersize=1)
         plt.grid()
         plt.title(file[:20]+"...")        
     plt.suptitle(dir, color="Black", y=1.05, fontsize="xx-large")
