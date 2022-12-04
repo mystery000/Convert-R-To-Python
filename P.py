@@ -1,7 +1,6 @@
 import os
 import csv
 import sys
-import math
 import statistics
 import numpy as np
 from scipy import stats
@@ -61,13 +60,13 @@ step = 10
 
 rootdir = f"{os.getcwd()}"
 os.chdir(f"{os.getcwd()}\Mesures dans l'air")
-savedir = f"{os.getcwd()}"
+savedir = f"{os.getcwd()}" #directory in which pdf file to save
 
 
 def convert(e):
-    x = '.'.join(e)
-    x = x.split("\t")
-    x = map(toFloat, x)
+    x = '.'.join(e) # concat all list items with '.' ['2','0000\t0', '00343'] => '2.000\t0.00343'
+    x = x.split("\t") # create list '2.000\t0.00343' => ['2.000','0.00343']
+    x = map(toFloat, x) # converts string to float
     x = list(x)
     return x
 
@@ -83,12 +82,12 @@ def extractV3(e):
     return e[1]
 
 def input(d, f):
-    file = "".join([savedir,"/",d, "/", f])
+    file = "".join([savedir,"/",d, "/", f]) # create full path of file to input 
     print(file)
     with open(file, newline='') as f:
         reader = csv.reader(f)
         data1 = list(reader)
-    data1 = data1[24:-1]
+    data1 = data1[24:-1] # file pointer skips 24 steps
     data1 = list(map(convert, data1))
     datax = list(map(extractV1, data1))
     datay = list(map(extractV3, data1))
@@ -97,24 +96,26 @@ def input(d, f):
     n = len(x)
     return [n,x,y]
 
-pdf = PdfPages("".join([rootdir,"/plots.pdf"]))
+pdf = PdfPages("".join([rootdir,"/plots.pdf"])) # save the file to current work directory as plots.pdf
 
-dirs = []
+dirs = [] 
+#Get all directories in which LVM files are stored.
 for dir in os.listdir():
    if Path(f"{os.getcwd()}/{dir}").is_dir():
        dirs.append(dir)
 
 dirs.sort(key=len)
-disp_max:int = 25
+disp_max:int = 25 # Each pdf page can have a maximum of 25 plots displayed.
 for dir in dirs:   
     
-    files = []
+    files = [] # Get all the LVM files in subdirectory
     for (root,folder,file) in os.walk(dir):
         files = file
         break
     
     files.sort(key=len)
     for i, file in enumerate(files):
+        # When a page can hold 25 plots, save the plots to a pdf file.
         if i % disp_max is 0:
             if i is not 0:
                 plt.suptitle(dir, color="Black", y=1.05, fontsize="xx-large")
@@ -127,16 +128,12 @@ for dir in dirs:
         w1 = data[1]
         spectre = data[2]
         
-        lg = len(files)
-        y = 5
-        x = math.ceil(lg/y)
-        
         plt.subplot(5, 5, (i % disp_max)+1).set_ylim(0,3)
         plt.tight_layout(pad=0.5, w_pad=0.5, h_pad=1.0)
         plt.plot(w1, spectre,'ro', color=select_col[i % len(select_col)], markersize=1)
         plt.grid()
         plt.title(file)  
-        
+        #The plots that remained will be saved to a pdf file. 
         if i is len(files)-1:
             plt.suptitle(dir, color="Black", y=1.05, fontsize="xx-large")
             fig.savefig(pdf, format="pdf", bbox_inches="tight")
