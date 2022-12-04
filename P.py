@@ -99,10 +99,10 @@ def input(d, f):
 
 pdf = PdfPages("".join([rootdir,"/plots.pdf"]))
 
-dirs = ['Abs0_xxmA_0Deg_5010µs']
-#for dir in os.listdir():
-#    if Path(f"{os.getcwd()}/{dir}").is_dir():
-#        dirs.append(dir)
+dirs = []
+for dir in os.listdir():
+   if Path(f"{os.getcwd()}/{dir}").is_dir():
+       dirs.append(dir)
 
 dirs.sort(key=len)
 disp_max:int = 25
