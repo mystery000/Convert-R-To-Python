@@ -99,18 +99,29 @@ def input(d, f):
 
 pdf = PdfPages("".join([rootdir,"/plots.pdf"]))
 
-dirs = []
-for dir in os.listdir():
-    if Path(f"{os.getcwd()}/{dir}").is_dir():
-        dirs.append(dir)
+dirs = ['Abs0_xxmA_0Deg_5010µs']
+#for dir in os.listdir():
+#    if Path(f"{os.getcwd()}/{dir}").is_dir():
+#        dirs.append(dir)
 
+dirs.sort(key=len)
+disp_max:int = 25
 for dir in dirs:   
-    fig = plt.figure(figsize = (15,15))
+    
     files = []
     for (root,folder,file) in os.walk(dir):
         files = file
         break
+    
+    files.sort(key=len)
     for i, file in enumerate(files):
+        if i % disp_max is 0:
+            if i is not 0:
+                plt.suptitle(dir, color="Black", y=1.05, fontsize="xx-large")
+                fig.savefig(pdf, format="pdf", bbox_inches="tight")
+            fig = plt.figure(figsize = (15,15))
+                        
+        
         data = input(dir, file)
         n = data[0]
         w1 = data[1]
@@ -120,13 +131,16 @@ for dir in dirs:
         y = 5
         x = math.ceil(lg/y)
         
-        plt.subplot(x, y, i+1).set_ylim(0,3)
+        plt.subplot(5, 5, (i % disp_max)+1).set_ylim(0,3)
         plt.tight_layout(pad=0.5, w_pad=0.5, h_pad=1.0)
         plt.plot(w1, spectre,'ro', color=select_col[i % len(select_col)], markersize=1)
         plt.grid()
-        plt.title(file[:20]+"...")        
-    plt.suptitle(dir, color="Black", y=1.05, fontsize="xx-large")
-    fig.savefig(pdf, format="pdf", bbox_inches="tight")
+        plt.title(file)  
+        
+        if i is len(files)-1:
+            plt.suptitle(dir, color="Black", y=1.05, fontsize="xx-large")
+            fig.savefig(pdf, format="pdf", bbox_inches="tight")
+            
     sys.stdout.flush() 
     
 pdf.close()
