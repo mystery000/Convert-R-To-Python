@@ -116,11 +116,11 @@ for dir in dirs:
     files.sort(key=len)
     for i, file in enumerate(files):
         # When a page can hold 25 plots, save the plots to a pdf file.
-        if i % disp_max is 0:
-            if i is not 0:
-                plt.suptitle(dir, color="Black", y=1.05, fontsize="xx-large")
-                fig.savefig(pdf, format="pdf", bbox_inches="tight")
-            fig = plt.figure(figsize = (15,15))
+        if i % disp_max is 0: # 0, 25, 50 75 ...  
+            if i is not 0: # if you remove this condition, empty figure would be saved to pdf page.
+                plt.suptitle(dir, color="Black", y=1.05, fontsize="xx-large") # figure title
+                fig.savefig(pdf, format="pdf", bbox_inches="tight") # save figure to pdf file
+            fig = plt.figure(figsize = (15,15)) # create new figure to save on new page, so there is a figure in which 25 plots on each page.
                         
         
         data = input(dir, file)
@@ -133,7 +133,9 @@ for dir in dirs:
         plt.plot(w1, spectre,'ro', color=select_col[i % len(select_col)], markersize=1)
         plt.grid()
         plt.title(file)  
-        #The plots that remained will be saved to a pdf file. 
+        #The plots that remained will be saved to a pdf file.
+        # We assume that 58 plots will be saved to pdf. 
+        # if we follow above logic, 8(58-25*2)plots will be left. 
         if i is len(files)-1:
             plt.suptitle(dir, color="Black", y=1.05, fontsize="xx-large")
             fig.savefig(pdf, format="pdf", bbox_inches="tight")
